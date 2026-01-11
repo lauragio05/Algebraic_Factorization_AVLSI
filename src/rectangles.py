@@ -2,11 +2,6 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import List, Set, Tuple, Dict, Iterable, Optional
 
-# We only need the KernelMatrix type at runtime.
-# If you want type checking, you can import it with TYPE_CHECKING.
-# from .matrix import KernelMatrix
-
-
 @dataclass(frozen=True)
 class Rectangle:
     rows: frozenset[int]   # indices into KM.rows

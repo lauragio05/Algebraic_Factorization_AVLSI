@@ -29,28 +29,3 @@ def parse_sop(expression: str):
 
     return cubes
 
-
-#Testing. This code is not run during import!
-if __name__ == "__main__":
-    F = parse_sop("xyz + a + mn + b + pqr + c")
-    print("Internal representation:")
-    print(F)
-
-    
-    print("Internal representation (one cube per line):")
-    print_cubes_vertical(F)
-
-    print("\nPretty-printed expression:")
-    print_expression(F)
-
-# Test inputs:
-# "adf + aef + bdf + h"
-# "adf + aef + bdf + bef + cdf + cef + b
-# " + h"
-#"  adf   +aef+   bdf +bef   +   h  "
-#"abc"
-#"h"
-#"ab + ab + ab"
-#"ab + ba"
-#"a+b++c+"
-#"xyz + a + mn + b + pqr + c"

@@ -150,7 +150,7 @@ def extract_common_cube_once(F: Expr):
 def extract_single_row_node_once(F: Expr, *, node_prefix: str, next_id: int):
     """
     Extract a node from patterns like:
-        dt1 + et1  -->  t2 = d + e,   F = t2 t1
+        {acd, ace, bcd, bce} -> {t1d, t1e} -> t1*(d+e)  with t1 = a*b*c
 
     Returns:
         (newF, new_defs, changed, next_id)

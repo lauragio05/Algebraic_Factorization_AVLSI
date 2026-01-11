@@ -18,8 +18,7 @@ def divide_expression(F: Expr, d: Cube) -> Tuple[Expr, Expr]:
 
     Notes:
     - If d is empty (frozenset()), then Q = F and R = empty.
-    - The empty cube frozenset() represents the constant 1.
-      Example: dividing cube 'f' by 'f' gives empty cube -> 1.
+    - empty cube frozenset() represents the constant 1.
     """
     if not isinstance(d, frozenset):
         d = frozenset(d)
@@ -53,6 +52,6 @@ def multiply_cube_expr(d: Cube, Q: Expr) -> Expr:
 def add_expr(A: Expr, B: Expr) -> Expr:
     """
     Algebraic addition for SOP with set representation.
-    (Idempotent: duplicates removed automatically.)
+    (duplicates removed automatically)
     """
     return set(A) | set(B)

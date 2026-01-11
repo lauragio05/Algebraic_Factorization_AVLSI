@@ -58,14 +58,6 @@ def synthesize_by_rectangles(
         # 1) kernel extraction
         pairs = kernels(current_F)
 
-        #For debugging:
-        #print("Kernels extracted")
-        #print("thses are the pairs:")
-        #for idx, (co_kernel, kernel_expr) in enumerate(pairs, start=1):
-            #print(f"pair {idx}: co-kernel {pretty_cube(co_kernel)}")
-            #print("kernel:")
-            #print_cubes_vertical(kernel_expr)
-
         # Stop if nothing to build a matrix from
         if not pairs:
             if verbose:
@@ -131,7 +123,6 @@ def synthesize_by_rectangles(
             break
 
         prof = rectangle_profit(KM, best)
-        #print(f"Best rectangle: rows={best.nrows}, cols={best.ncols}, profit={prof}")
 
 
         if verbose:
