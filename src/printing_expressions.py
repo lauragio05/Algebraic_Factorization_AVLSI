@@ -14,6 +14,11 @@ def print_expression(expr):
             terms.append("".join(sorted(cube)))
     print(" + ".join(sorted(terms, key=lambda s: (len(s), s))))
 
+def print_named_expression(name: str, expr):
+    print(f"{name} = ", end="")
+    print_expression(expr)
+
+
 
 # Print each cube on its own line.
 # Sorted by: cube size (short cubes first), lexicographic literal order

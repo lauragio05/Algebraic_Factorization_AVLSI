@@ -1,6 +1,7 @@
 # src/factor.py
 from __future__ import annotations
 from typing import Dict, FrozenSet, Set, Tuple, Iterable
+from .kernel import common_cube
 
 Literal = str
 Cube = FrozenSet[Literal]
@@ -102,3 +103,86 @@ def apply_rectangle_once(
     # --- 5) store definition ---
     defs: Dict[str, Expr] = {new_node: T}
     return newF, defs, removed
+
+def extract_common_cube_once(F: Expr):
+    """
+    Perform one algebraic common-cube extraction on F, if possible.
+
+    Example:
+      {dt1, et1} -> {t1d, t1e} -> t1*(d+e)
+
+    Returns:
+      (newF, changed)
+    """
+    if len(F) < 2:
+        return F, False
+
+    # Try all subsets of size >= 2 implicitly by grouping
+    cubes = list(F)
+
+    for i in range(len(cubes)):
+        base = cubes[i]
+
+        # Group all cubes sharing something with base
+        group = {c for c in F if c & base}
+
+        if len(group) < 2:
+            continue
+
+        cc = common_cube(group)
+        if not cc:
+            continue
+
+        # Build remainder expression
+        remainder = {frozenset(c - cc) for c in group}
+
+        # Remove old cubes
+        newF = set(F) - group
+
+        # Add factored form: cc * remainder
+        for r in remainder:
+            newF.add(frozenset(cc | r))
+
+        return newF, True
+
+    return F, False
+
+def extract_single_row_node_once(F: Expr, *, node_prefix: str, next_id: int):
+    """
+    Extract a node from patterns like:
+        dt1 + et1  -->  t2 = d + e,   F = t2 t1
+
+    Returns:
+        (newF, new_defs, changed, next_id)
+    """
+    cubes = list(F)
+
+    for base in cubes:
+        # Find all cubes sharing a common cube with base
+        group = {c for c in F if c & base}
+        if len(group) < 2:
+            continue
+
+        cc = common_cube(group)
+        if not cc:
+            continue
+
+        # Remainder (what will go into the new node)
+        remainder = {frozenset(c - cc) for c in group}
+        if len(remainder) < 2:
+            continue
+
+        # Create new node
+        node = f"{node_prefix}{next_id}"
+        next_id += 1
+
+        # Definition: node = sum(remainder)
+        new_defs = {node: remainder}
+
+        # Rewrite F: remove group, add node * cc
+        newF = set(F) - group
+        newF.add(frozenset(set(cc) | {node}))
+
+        return newF, new_defs, True, next_id
+
+    return F, {}, False, next_id

@@ -111,7 +111,7 @@ def enumerate_closed_rectangles(
 
     return out
 
-def rectangle_profit(KM, rect: Rectangle) -> int:
+def rectangle_profit_cubecount(KM, rect: Rectangle) -> int:
     """
     Profit based on cube counts.
 
@@ -131,6 +131,62 @@ def rectangle_profit(KM, rect: Rectangle) -> int:
     t = len(T)
 
     return r * t - (r + t)
+
+def _lit_cost_cube(cube) -> int:
+    return len(cube)
+
+def _lit_cost_expr(expr) -> int:
+    return sum(_lit_cost_cube(c) for c in expr)
+
+def rectangle_profit(KM, rect) -> int:
+    """
+    Literal-count profit for extracting a rectangle.
+
+    Rectangle selects:
+      - rect.rows: list/set of row indices into KM.rows (each is a Cube)
+      - rect.cols: list/set of col indices into KM.cols (each is an Expr)
+
+    We form:
+      R = { KM.rows[i] for i in rect.rows }     (co-kernel cubes)
+      T = union of all cubes across KM.cols[j]  (kernel cubes)
+
+    Covered region corresponds to cubes r ∪ t for r in R, t in T.
+
+    Extraction model:
+      introduce new node X = sum(R)
+      replace covered region by X * T
+      pay definition cost for X
+
+    Profit = literals_before - literals_after
+    """
+
+    # Resolve actual row cubes from indices
+    R = [KM.rows[i] for i in rect.rows]
+
+    # Union of kernel cubes across selected columns
+    T = set()
+    for j in rect.cols:
+        T |= set(KM.cols[j])  # KM.cols[j] is Expr = set of cubes
+
+    # BEFORE: literal cost of all unique cubes in the covered region
+    covered = set()
+    for r in R:
+        for t in T:
+            covered.add(frozenset(set(r) | set(t)))
+    before = sum(len(c) for c in covered)
+
+    # AFTER:
+    # definition cost of X = sum(R)
+    def_cost = sum(len(r) for r in R)
+
+    # top-level usage: X * T  (treat X as 1 literal per product cube)
+    use_cost = sum(1 + len(t) for t in T)
+
+    after = def_cost + use_cost
+
+    return before - after
+
+
 
 def best_rectangle(KM, rectangles):
     best = None
