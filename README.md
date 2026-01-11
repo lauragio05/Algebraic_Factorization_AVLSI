@@ -356,3 +356,43 @@ a + bc + def
 #### Design Notes
 - Printing logic is intentionally separated from synthesis logic
 - Used by both tests and demo scripts
+
+## Testing 
+
+### Unit Tests
+Located in testing/:
+- ```test_kernel.py``` – kernel extraction
+- ```test_rectangles.py ```– rectangle enumeration
+- ```test_factor.py``` – extraction logic
+- ```test_synthesize.py``` – end-to-end synthesis
+### Demo Script
+demo_synthesize.py runs synthesis on arbitrary expressions and prints the result.
+
+## How to Run
+
+Create and activate a virtual environment
+
+```pyhton
+python3 -m venv venv
+source venv/bin/activate    # macOS / Linux
+# or
+venv\Scripts\activate       # Windows
+```
+Run synthesis demo
+```pyhton
+python3 testing/demo_synthesize.py
+```
+
+## Design Rationale
+- Literal-count profit reflects hardware cost better than cube count.
+- Single-row extraction captures algebraic factorizations not expressible as rectangles.
+- Recursive factoring is managed via a worklist to ensure termination.
+- The final network is a multi-level DAG representation.
+
+## Project Status
+- Kernel extraction implemented
+- Rectangle enumeration and profit evaluation implemented
+- Single-row algebraic extraction implemented
+- Recursive multi-level factoring implemented
+- Functional equivalence checking implemented
+- Unit tests and demo scripts included
