@@ -69,28 +69,51 @@ defs: Dict[str, Expr]
 
 ## Project Structure
 Algebraic_Factorization_AVLSI/
+
 │
+
 ├── README.md
+
 │
+
 ├── src/
+
 │   ├── parser_sop.py
+
 │   ├── kernel.py
+
 │   ├── matrix.py
+
 │   ├── rectangles.py
+
 │   ├── factor.py
+
 │   ├── synthesize.py
+
 │   ├── division.py
+
 │   ├── printing_expressions.py
+
 │   └── __init__.py
+
 │
+
 └── testing/
+
     ├── demo_synthesize.py
+
     ├── test_synthesize.py
+
     ├── test_kernel.py
+
     ├── test_rectangles.py
+
     ├── test_factor.py
+
     ├── test_division.py
+
     └── text_matrix.py
+
 
 ## File Descriptions
 ### [`parser_sop.py`](src/parser_sop.py)
@@ -110,6 +133,49 @@ Expr = {
 ```
 #### Internal Representation
 -Literal: ```str```
+
 -Cube: ```FrozenSet[str]``` (logical AND of literals)
+
 -Expr: ```Set[Cube]``` (logical OR of cubes)
+
 This representation is used consistently across kernel extraction, rectangle enumeration, and factoring.
+
+#### Main Responsibilities
+Tokenize SOP expressions using '+' as the OR operator
+
+- Convert each product term into a cube (set of literals)
+
+- Normalize expressions by:
+
+- - removing duplicate cubes
+
+- - sorting literals within cubes (via ```frozenset```)
+
+- Support the constant term:
+
+- - an empty cube (```frozenset()```) represents logical ```1```
+
+#### Key Functions
+- ```parse_sop(expr_str: str) -> Expr```
+
+Parses an SOP string and returns the corresponding ```Expr```.
+
+- ```_parse_cube(term: str) -> Cube``` (internal helper)
+
+Converts a single product term (e.g. "abc") into a cube {a,b,c}.
+
+#### Design Notes
+
+- The parser assumes positive literals only (no negation).
+
+- Parsing is deliberately simple and deterministic to match coursework assumptions.
+
+- The output expression is guaranteed to be in a normalized, hashable form suitable for:
+
+- - kernel extraction
+
+- - matrix construction
+
+- - equivalence checking
+
+This module serves as the entry point of the synthesis pipeline, ensuring all downstream algorithms operate on a clean and uniform data structure.
