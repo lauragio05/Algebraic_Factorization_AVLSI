@@ -57,9 +57,41 @@ The algorithm iterates until no further improvement is possible, then **recursiv
 Literal = str
 Cube    = FrozenSet[Literal]   # AND of literals
 Expr    = Set[Cube]            # OR of cubes (SOP)
+```
 
 ### Definitions (Nodes)
 - Generated nodes are stored as:
+```python
 defs: Dict[str, Expr]
+```
 - Node literals (e.g. t1) may appear in other expressions.
 - Definitions form a directed acyclic graph (DAG).
+
+## Project Structure
+Algebraic_Factorization_AVLSI/
+│
+├── README.md
+│
+├── src/
+│   ├── parser_sop.py
+│   ├── kernel.py
+│   ├── matrix.py
+│   ├── rectangles.py
+│   ├── factor.py
+│   ├── synthesize.py
+│   ├── division.py
+│   ├── printing_expressions.py
+│   └── __init__.py
+│
+└── testing/
+    ├── demo_synthesize.py
+    ├── test_synthesize.py
+    ├── test_kernel.py
+    ├── test_rectangles.py
+    ├── test_factor.py
+    ├── test_division.py
+    └── text_matrix.py
+
+## File Descriptions
+### [`parser_sop.py`](src/parser_sop.py)
+ Parses SOP strings such as ab+ac+ad into the internal Expr representation. Handles normalization and cube deduplication.
