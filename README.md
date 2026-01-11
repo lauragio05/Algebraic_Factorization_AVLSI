@@ -94,4 +94,22 @@ Algebraic_Factorization_AVLSI/
 
 ## File Descriptions
 ### [`parser_sop.py`](src/parser_sop.py)
- Parses SOP strings such as ab+ac+ad into the internal Expr representation. Handles normalization and cube deduplication.
+This module is responsible for parsing Boolean expressions written in **Sum-of-Products (SOP) textual form** into the internal data structures used throughout the synthesis pipeline.
+
+It converts strings such as:
+ab + ac + ad
+
+into the canonical internal representation:
+
+```python
+Expr = {
+    frozenset({"a", "b"}),
+    frozenset({"a", "c"}),
+    frozenset({"a", "d"}),
+}
+```
+#### Internal Representation
+-Literal: ```str```
+-Cube: ```FrozenSet[str]``` (logical AND of literals)
+-Expr: ```Set[Cube]``` (logical OR of cubes)
+This representation is used consistently across kernel extraction, rectangle enumeration, and factoring.
